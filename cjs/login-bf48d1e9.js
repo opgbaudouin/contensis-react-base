@@ -1,12 +1,14 @@
 'use strict';
 
 var immutable = require('immutable');
-var routing = require('./routing-6197a03e.js');
+var reducers = require('./reducers-0387eb16.js');
+var selectors$1 = require('./selectors-975b9ec9.js');
 var effects = require('@redux-saga/core/effects');
-var ToJs = require('./ToJs-8f6b21c9.js');
+var selectors = require('./selectors-f89efb18.js');
 var mapJson = require('jsonpath-mapper');
 var awaitToJs = require('await-to-js');
 var Cookies = require('js-cookie');
+var ToJs = require('./ToJs-4e6462a1.js');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -33,110 +35,6 @@ function _interopNamespace(e) {
 
 var mapJson__default = /*#__PURE__*/_interopDefaultLegacy(mapJson);
 var Cookies__default = /*#__PURE__*/_interopDefaultLegacy(Cookies);
-
-const fromJSOrdered = js => {
-  return typeof js !== 'object' || js === null ? js : Array.isArray(js) ? immutable.Seq(js).map(fromJSOrdered).toList() : immutable.Seq(js).map(fromJSOrdered).toOrderedMap();
-};
-
-const ACTION_PREFIX = '@USER/';
-const VALIDATE_USER = `${ACTION_PREFIX}VALIDATE_USER`;
-const SET_AUTHENTICATION_STATE = `${ACTION_PREFIX}SET_AUTHENTICATION_STATE`;
-const LOGIN_USER = `${ACTION_PREFIX}LOGIN_USER`;
-const LOGIN_SUCCESSFUL = `${ACTION_PREFIX}LOGIN_SUCCESSFUL`;
-const LOGIN_FAILED = `${ACTION_PREFIX}LOGIN_FAILED`;
-const LOGOUT_USER = `${ACTION_PREFIX}LOGOUT_USER`;
-const REGISTER_USER = `${ACTION_PREFIX}REGISTER_USER`;
-const REGISTER_USER_SUCCESS = `${ACTION_PREFIX}REGISTER_USER_SUCCESS`;
-const REGISTER_USER_FAILED = `${ACTION_PREFIX}REGISTER_USER_FAILED`;
-
-var types = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  VALIDATE_USER: VALIDATE_USER,
-  SET_AUTHENTICATION_STATE: SET_AUTHENTICATION_STATE,
-  LOGIN_USER: LOGIN_USER,
-  LOGIN_SUCCESSFUL: LOGIN_SUCCESSFUL,
-  LOGIN_FAILED: LOGIN_FAILED,
-  LOGOUT_USER: LOGOUT_USER,
-  REGISTER_USER: REGISTER_USER,
-  REGISTER_USER_SUCCESS: REGISTER_USER_SUCCESS,
-  REGISTER_USER_FAILED: REGISTER_USER_FAILED
-});
-
-const defaultAuthenticationState = immutable.Map({
-  authenticated: false,
-  authenticationError: false,
-  clientCredentials: null,
-  error: false,
-  loading: false
-});
-const initialUserState = immutable.Map({
-  authenticationState: defaultAuthenticationState,
-  groups: new immutable.List([])
-});
-var UserReducer = ((state = initialUserState, action) => {
-  switch (action.type) {
-    case LOGIN_USER:
-    case LOGOUT_USER:
-    case SET_AUTHENTICATION_STATE:
-      {
-        if (!action.authenticationState) {
-          action.authenticationState = defaultAuthenticationState.toJS();
-        }
-
-        const loading = action.type === LOGIN_USER;
-        const {
-          authenticationState: {
-            error = false,
-            authenticated,
-            authenticationError = false,
-            clientCredentials = null
-          },
-          user
-        } = action;
-
-        if (user) {
-          user.name = `${user.firstName} ${user.lastName}`;
-          user.isZengentiStaff = user.email.includes('@zengenti.com');
-        }
-
-        const nextState = { ...initialUserState.toJS(),
-          ...(user || state.toJS()),
-          authenticationState: {
-            authenticated: authenticated || state.getIn(['authenticationState', 'authenticated']),
-            authenticationError,
-            clientCredentials,
-            error,
-            loading
-          }
-        };
-        return fromJSOrdered(nextState);
-      }
-    // REGISTER_USER is the trigger to set the user.registration initial state
-    // and will set user.registration.loading to true
-    // REGISTER_USER_FAILED will unset user.registration.loading and will set
-    // the value in user.registration.error
-    // REGISTER_USER_SUCCESS will unset user.registration.loading and will
-    // set user.registration to the created user from the api response
-
-    case REGISTER_USER:
-    case REGISTER_USER_FAILED:
-    case REGISTER_USER_SUCCESS:
-      {
-        const {
-          error,
-          user
-        } = action; // Set registration object from the supplied action.user
-        // so we can call these values back later
-
-        const nextState = state.set('registration', user ? fromJSOrdered(user) : state.get('registration', immutable.Map())); // Set registration flags so the UI can track the status
-
-        return nextState.setIn(['registration', 'success'], action.type === REGISTER_USER_SUCCESS).setIn(['registration', 'error'], error || false).setIn(['registration', 'loading'], action.type === REGISTER_USER);
-      }
-
-    default:
-      return state;
-  }
-});
 
 // import { Client } from 'contensis-management-api';
 const getManagementApiClient = async ({
@@ -532,7 +430,7 @@ LoginHelper.GetUserDetails = async client => {
   return [userError, user];
 };
 
-const loginSagas = [effects.takeEvery(LOGIN_USER, loginUserSaga), effects.takeEvery(LOGOUT_USER, logoutUserSaga), effects.takeEvery(VALIDATE_USER, validateUserSaga), effects.takeEvery(SET_AUTHENTICATION_STATE, redirectAfterSuccessfulLoginSaga)];
+const loginSagas = [effects.takeEvery(reducers.LOGIN_USER, loginUserSaga), effects.takeEvery(reducers.LOGOUT_USER, logoutUserSaga), effects.takeEvery(reducers.VALIDATE_USER, validateUserSaga), effects.takeEvery(reducers.SET_AUTHENTICATION_STATE, redirectAfterSuccessfulLoginSaga)];
 function* handleRequiresLoginSaga(action) {
   const {
     entry,
@@ -542,9 +440,9 @@ function* handleRequiresLoginSaga(action) {
     },
     staticRoute
   } = action;
-  let userLoggedIn = yield effects.select(ToJs.selectUserIsAuthenticated); // Check for a securityToken in querystring
+  let userLoggedIn = yield effects.select(selectors.selectUserIsAuthenticated); // Check for a securityToken in querystring
 
-  const currentQs = routing.queryParams((yield effects.select(routing.selectCurrentSearch)));
+  const currentQs = selectors$1.queryParams((yield effects.select(selectors$1.selectCurrentSearch)));
   const securityToken = currentQs.securityToken || currentQs.securitytoken; // Check if any of the defined routes have "requireLogin" attribute
 
   const {
@@ -552,7 +450,7 @@ function* handleRequiresLoginSaga(action) {
   } = staticRoute && staticRoute.route || {};
   const {
     requireLogin: authContentType
-  } = entry && routing.findContentTypeMapping(ContentTypeMappings, entry.sys.contentTypeId) || {}; // If requireLogin, authRoute or authContentType has been specified as an
+  } = entry && selectors$1.findContentTypeMapping(ContentTypeMappings, entry.sys.contentTypeId) || {}; // If requireLogin, authRoute or authContentType has been specified as an
   // array of groups we can merge all the arrays and match on any group supplied
 
   const routeRequiresGroups = [...(Array.isArray(authContentType) && authContentType || []), ...(Array.isArray(authRoute) && authRoute || []), ...(Array.isArray(requireLogin) && requireLogin || [])];
@@ -568,7 +466,7 @@ function* handleRequiresLoginSaga(action) {
       });
     } // otherwise do a non blocking put to handle validation in the background
     else yield effects.put({
-        type: VALIDATE_USER,
+        type: reducers.VALIDATE_USER,
         securityToken
       });
   }
@@ -579,7 +477,7 @@ function* handleRequiresLoginSaga(action) {
     if (!userLoggedIn && !securityToken) {
       LoginHelper.ClientRedirectToSignInPage(action.location.pathname);
     } else if (routeRequiresGroups.length > 0) {
-      const userGroups = (yield effects.select(ToJs.selectUserGroups)).toJS();
+      const userGroups = (yield effects.select(selectors.selectUserGroups)).toJS();
       const groupMatch = ToJs.matchUserGroup(userGroups, routeRequiresGroups);
       if (!groupMatch) LoginHelper.ClientRedirectToAccessDeniedPage(action.location.pathname);
     }
@@ -598,7 +496,7 @@ function* validateUserSaga({
       refreshToken
     });
     if (error) yield effects.put({
-      type: SET_AUTHENTICATION_STATE,
+      type: reducers.SET_AUTHENTICATION_STATE,
       authenticationState: {
         error: {
           message: error.message,
@@ -615,7 +513,7 @@ function* validateUserSaga({
     clientCredentials
   }); // Tell any callers have we successfully logged in?
 
-  return yield effects.select(ToJs.selectUserIsAuthenticated);
+  return yield effects.select(selectors.selectUserIsAuthenticated);
 }
 
 function* loginUserSaga(action = {}) {
@@ -626,7 +524,7 @@ function* loginUserSaga(action = {}) {
   } = action; // If a WSFED_LOGIN site has dispatched the loginUser action
   // just redirect them to the Identity Provider sign in
 
-  if (action.type === LOGIN_USER && LoginHelper.WSFED_LOGIN) LoginHelper.ClientRedirectToSignInPage();
+  if (action.type === reducers.LOGIN_USER && LoginHelper.WSFED_LOGIN) LoginHelper.ClientRedirectToSignInPage();
   const {
     authenticationState,
     user
@@ -636,18 +534,18 @@ function* loginUserSaga(action = {}) {
     clientCredentials
   });
   yield effects.put({
-    type: SET_AUTHENTICATION_STATE,
+    type: reducers.SET_AUTHENTICATION_STATE,
     authenticationState,
     user
   });
 }
 
 function* redirectAfterSuccessfulLoginSaga() {
-  const isLoggedIn = yield effects.select(ToJs.selectUserIsAuthenticated);
-  const redirectPath = routing.queryParams((yield effects.select(routing.selectCurrentSearch))).redirect_uri;
+  const isLoggedIn = yield effects.select(selectors.selectUserIsAuthenticated);
+  const redirectPath = selectors$1.queryParams((yield effects.select(selectors$1.selectCurrentSearch))).redirect_uri;
 
   if (isLoggedIn && redirectPath) {
-    yield effects.put(routing.setRoute(redirectPath));
+    yield effects.put(selectors$1.setRoute(redirectPath));
   }
 }
 
@@ -655,14 +553,14 @@ function* logoutUserSaga({
   redirectPath
 }) {
   yield effects.put({
-    type: SET_AUTHENTICATION_STATE,
+    type: reducers.SET_AUTHENTICATION_STATE,
     user: null
   });
   yield LoginHelper.LogoutUser(redirectPath);
 }
 
 function* refreshSecurityToken() {
-  const clientCredentials = ((yield effects.select(ToJs.selectClientCredentials)) || immutable.Map()).toJS();
+  const clientCredentials = ((yield effects.select(selectors.selectClientCredentials)) || immutable.Map()).toJS();
 
   if (Object.keys(clientCredentials).length > 0) {
     const client = yield getManagementApiClient(clientCredentials);
@@ -671,23 +569,14 @@ function* refreshSecurityToken() {
     const newClientCredentials = mapClientCredentials(client);
     authenticationState.clientCredentials = newClientCredentials;
     yield effects.put({
-      type: SET_AUTHENTICATION_STATE,
+      type: reducers.SET_AUTHENTICATION_STATE,
       authenticationState
     });
   }
 }
 
-exports.LOGIN_USER = LOGIN_USER;
-exports.LOGOUT_USER = LOGOUT_USER;
 exports.LoginHelper = LoginHelper;
-exports.REGISTER_USER = REGISTER_USER;
-exports.REGISTER_USER_FAILED = REGISTER_USER_FAILED;
-exports.REGISTER_USER_SUCCESS = REGISTER_USER_SUCCESS;
-exports.UserReducer = UserReducer;
-exports.fromJSOrdered = fromJSOrdered;
 exports.handleRequiresLoginSaga = handleRequiresLoginSaga;
-exports.initialUserState = initialUserState;
 exports.loginSagas = loginSagas;
 exports.refreshSecurityToken = refreshSecurityToken;
-exports.types = types;
-//# sourceMappingURL=login-0e13e272.js.map
+//# sourceMappingURL=login-bf48d1e9.js.map

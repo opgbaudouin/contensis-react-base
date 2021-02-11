@@ -8,27 +8,30 @@ var React = require('react');
 var reactRouterDom = require('react-router-dom');
 var reactRedux = require('react-redux');
 require('immutable');
-require('./login-0e13e272.js');
-var App = require('./App-eb4a124c.js');
+require('./reducers-0387eb16.js');
+var App = require('./App-35ac96a5.js');
 require('history');
 require('contensis-delivery-api');
-var routing = require('./routing-6197a03e.js');
+var selectors$1 = require('./selectors-975b9ec9.js');
 require('redux');
 require('redux-immutable');
 require('redux-thunk');
 require('redux-saga');
-var version = require('./version-7fdcc2c0.js');
+var selectors = require('./selectors-44ae4a9e.js');
 var queryString = require('query-string');
 require('@redux-saga/core/effects');
+require('./selectors-00e8bddc.js');
 require('loglevel');
-require('./ToJs-8f6b21c9.js');
+require('./selectors-f89efb18.js');
+require('./login-bf48d1e9.js');
 require('jsonpath-mapper');
 require('await-to-js');
 require('js-cookie');
+require('./ToJs-4e6462a1.js');
 require('react-router-config');
 var reactHotLoader = require('react-hot-loader');
 require('prop-types');
-require('./RouteLoader-72de4da1.js');
+require('./RouteLoader-69097c81.js');
 var reactDom = require('react-dom');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -74,15 +77,15 @@ class ClientApp {
     const versionStatusFromHostname = App.deliveryApi.getClientSideVersionStatus();
 
     if (window.isDynamic || window.REDUX_DATA || process.env.NODE_ENV !== 'production') {
-      store = App.createStore(withReducers, App.fromJSLeaveImmer(window.REDUX_DATA, true), App.browserHistory);
-      store.dispatch(version.setVersionStatus(qs.versionStatus || versionStatusFromHostname));
+      store = selectors.createStore(withReducers, App.fromJSLeaveImmer(window.REDUX_DATA, true), App.browserHistory);
+      store.dispatch(selectors.setVersionStatus(qs.versionStatus || versionStatusFromHostname));
       /* eslint-disable no-console */
 
       console.log('Hydrating from inline Redux');
       /* eslint-enable no-console */
 
       store.runSaga(App.rootSaga(withSagas));
-      store.dispatch(routing.setCurrentProject(App.pickProject(window.location.hostname, qs)));
+      store.dispatch(selectors$1.setCurrentProject(App.pickProject(window.location.hostname, qs)));
       delete window.REDUX_DATA;
       HMRRenderer(GetClientJSX(store));
     } else {
@@ -94,10 +97,10 @@ class ClientApp {
         /* eslint-enable no-console */
         const ssRedux = JSON.parse(data); // store = createStore(withReducers, fromJSLeaveImmer(ssRedux), history);
 
-        store = App.createStore(withReducers, App.fromJSLeaveImmer(ssRedux), App.browserHistory); // store.dispatch(setVersionStatus(versionStatusFromHostname));
+        store = selectors.createStore(withReducers, App.fromJSLeaveImmer(ssRedux), App.browserHistory); // store.dispatch(setVersionStatus(versionStatusFromHostname));
 
         store.runSaga(App.rootSaga(withSagas));
-        store.dispatch(routing.setCurrentProject(App.pickProject(window.location.hostname, queryString__default['default'].parse(window.location.search)))); // if (typeof window != 'undefined') {
+        store.dispatch(selectors$1.setCurrentProject(App.pickProject(window.location.hostname, queryString__default['default'].parse(window.location.search)))); // if (typeof window != 'undefined') {
         //   store.dispatch(checkUserLoggedIn());
         // }
 

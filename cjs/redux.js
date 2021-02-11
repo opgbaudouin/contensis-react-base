@@ -3,60 +3,53 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 require('immutable');
-var routing$1 = require('./routing-6197a03e.js');
-var version$1 = require('./version-7fdcc2c0.js');
+var reducers = require('./reducers-0387eb16.js');
+var selectors$1 = require('./selectors-975b9ec9.js');
+require('redux');
+require('redux-immutable');
+require('redux-thunk');
+require('redux-saga');
+var selectors = require('./selectors-44ae4a9e.js');
 require('query-string');
+var selectors$3 = require('./selectors-00e8bddc.js');
+var selectors$2 = require('./selectors-f89efb18.js');
+var actions = require('./actions-ddd061c7.js');
 
-var types = {
-  navigation: version$1.navigation,
-  routing: routing$1.routing,
-  version: version$1.version
-};
+const loadNavigationTree = () => selectors$1.action(selectors.GET_NODE_TREE);
 
-const loadNavigationTree = () => routing$1.action(version$1.GET_NODE_TREE);
-
-var navigation = /*#__PURE__*/Object.freeze({
+var navigationActions = /*#__PURE__*/Object.freeze({
   __proto__: null,
   loadNavigationTree: loadNavigationTree
 });
 
-var actions = {
-  navigation,
-  routing: routing$1.routing$1,
-  version: version$1.version$1
-};
-
-var selectors = {
-  navigation: version$1.navigation$1,
-  routing: routing$1.routing$2,
-  version: version$1.version$2
-};
-
-// e.g. { routing: { types, actions }, navigation: { types, actions } }
-// instead of { types: { routing, navigation }, actions: { routing, navigation } }
-
-const navigation$1 = {
-  types: types.navigation,
-  actions: actions.navigation,
-  selectors: selectors.navigation
+const navigation = {
+  types: selectors.navigationTypes,
+  actions: navigationActions,
+  selectors: selectors.navigationSelectors
 };
 const routing = {
-  types: types.routing,
-  actions: actions.routing,
-  selectors: selectors.routing
+  types: selectors$1.routingTypes,
+  actions: selectors$1.routingActions,
+  selectors: selectors$1.routingSelectors
 };
 const user = {
-  types: types.user,
-  actions: actions.user,
-  selectors: selectors.user
+  types: reducers.userTypes,
+  actions: actions.userActions,
+  selectors: selectors$2.userSelectors
 };
 const version = {
-  types: types.version,
-  actions: actions.version,
-  selectors: selectors.version
+  types: selectors.versionTypes,
+  actions: selectors.versionActions,
+  selectors: selectors$3.versionSelectors
 };
 
-exports.navigation = navigation$1;
+Object.defineProperty(exports, 'store', {
+  enumerable: true,
+  get: function () {
+    return selectors.reduxStore;
+  }
+});
+exports.navigation = navigation;
 exports.routing = routing;
 exports.user = user;
 exports.version = version;

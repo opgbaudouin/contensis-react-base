@@ -1,11 +1,4 @@
-'use strict';
-
-var React = require('react');
-var immutable = require('immutable');
-
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
+import { Map } from 'immutable';
 
 const selectUserIsLoading = state => {
   return state.getIn(['user', 'authenticationState', 'loading']);
@@ -43,12 +36,12 @@ const selectUserGroups = state => {
 const selectUserSecurityToken = state => {
   return state.getIn(['user', 'authenticationState', 'clientCredentials', 'contensisClassicToken']);
 };
-const selectUserRegistration = state => state.getIn(['user', 'registration'], immutable.Map());
+const selectUserRegistration = state => state.getIn(['user', 'registration'], Map());
 const selectUserRegistrationError = state => state.getIn(['user', 'registration', 'error'], false);
 const selectUserRegistrationIsLoading = state => state.getIn(['user', 'registration', 'loading'], false);
 const selectUserRegistrationIsSuccess = state => state.getIn(['user', 'registration', 'success'], false);
 
-var selectors = /*#__PURE__*/Object.freeze({
+var userSelectors = /*#__PURE__*/Object.freeze({
   __proto__: null,
   selectUserIsLoading: selectUserIsLoading,
   selectUserIsAuthenticated: selectUserIsAuthenticated,
@@ -68,44 +61,5 @@ var selectors = /*#__PURE__*/Object.freeze({
   selectUserRegistrationIsSuccess: selectUserRegistrationIsSuccess
 });
 
-const matchUserGroup = (userGroups = [], requiredGroups = []) => {
-  if (!Array.isArray(requiredGroups) || Array.isArray(requiredGroups) && requiredGroups.length === 0) return true;
-  const groupMatch = requiredGroups.some(requiredGroup => {
-    return userGroups.some(userGroup => {
-      if (requiredGroup.id === userGroup.id) {
-        return true;
-      }
-
-      if (requiredGroup.name === userGroup.name) {
-        return true;
-      }
-    });
-  });
-  return groupMatch;
-};
-
-const toJS = WrappedComponent => wrappedComponentProps => {
-  const KEY = 0;
-  const VALUE = 1;
-  const propsJS = Object.entries(wrappedComponentProps).reduce((newProps, wrappedComponentProp) => {
-    newProps[wrappedComponentProp[KEY]] = immutable.Iterable.isIterable(wrappedComponentProp[VALUE]) ? wrappedComponentProp[VALUE].toJS() : wrappedComponentProp[VALUE];
-    return newProps;
-  }, {});
-  return React__default['default'].createElement(WrappedComponent, propsJS);
-};
-
-exports.matchUserGroup = matchUserGroup;
-exports.selectClientCredentials = selectClientCredentials;
-exports.selectUser = selectUser;
-exports.selectUserAuthenticationError = selectUserAuthenticationError;
-exports.selectUserError = selectUserError;
-exports.selectUserGroups = selectUserGroups;
-exports.selectUserIsAuthenticated = selectUserIsAuthenticated;
-exports.selectUserIsLoading = selectUserIsLoading;
-exports.selectUserRegistration = selectUserRegistration;
-exports.selectUserRegistrationError = selectUserRegistrationError;
-exports.selectUserRegistrationIsLoading = selectUserRegistrationIsLoading;
-exports.selectUserRegistrationIsSuccess = selectUserRegistrationIsSuccess;
-exports.selectors = selectors;
-exports.toJS = toJS;
-//# sourceMappingURL=ToJs-8f6b21c9.js.map
+export { selectUserGroups as a, selectClientCredentials as b, selectUserAuthenticationError as c, selectUserError as d, selectUserIsLoading as e, selectUser as f, selectUserRegistrationError as g, selectUserRegistrationIsLoading as h, selectUserRegistrationIsSuccess as i, selectUserRegistration as j, selectUserIsAuthenticated as s, userSelectors as u };
+//# sourceMappingURL=selectors-a83a49a5.js.map

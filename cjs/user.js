@@ -5,45 +5,29 @@ Object.defineProperty(exports, '__esModule', { value: true });
 require('react');
 var reactRedux = require('react-redux');
 require('immutable');
-var login = require('./login-0e13e272.js');
-var routing = require('./routing-6197a03e.js');
+var reducers = require('./reducers-0387eb16.js');
+require('./selectors-975b9ec9.js');
 require('query-string');
 require('@redux-saga/core/effects');
-var ToJs = require('./ToJs-8f6b21c9.js');
+var selectors = require('./selectors-f89efb18.js');
+var login = require('./login-bf48d1e9.js');
 require('jsonpath-mapper');
 require('await-to-js');
 require('js-cookie');
-
-const loginUser = (username, password) => routing.action(login.LOGIN_USER, {
-  username,
-  password
-});
-const logoutUser = redirectPath => routing.action(login.LOGOUT_USER, {
-  redirectPath
-});
-const registerUser = (user, mappers) => routing.action(login.REGISTER_USER, {
-  user,
-  mappers
-});
-
-var actions = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  loginUser: loginUser,
-  logoutUser: logoutUser,
-  registerUser: registerUser
-});
+var ToJs = require('./ToJs-4e6462a1.js');
+var actions = require('./actions-ddd061c7.js');
 
 const useLogin = () => {
   const dispatch = reactRedux.useDispatch();
   const select = reactRedux.useSelector;
   return {
-    loginUser: (username, password) => dispatch(loginUser(username, password)),
-    logoutUser: redirectPath => dispatch(logoutUser(redirectPath)),
-    authenticationError: select(ToJs.selectUserAuthenticationError),
-    error: select(ToJs.selectUserError),
-    isAuthenticated: select(ToJs.selectUserIsAuthenticated),
-    isLoading: select(ToJs.selectUserIsLoading),
-    user: select(ToJs.selectUser).toJS()
+    loginUser: (username, password) => dispatch(actions.loginUser(username, password)),
+    logoutUser: redirectPath => dispatch(actions.logoutUser(redirectPath)),
+    authenticationError: select(selectors.selectUserAuthenticationError),
+    error: select(selectors.selectUserError),
+    isAuthenticated: select(selectors.selectUserIsAuthenticated),
+    isLoading: select(selectors.selectUserIsLoading),
+    user: select(selectors.selectUser).toJS()
   };
 };
 
@@ -62,11 +46,11 @@ const useLogin$1 = () => {
   const dispatch = reactRedux.useDispatch();
   const select = reactRedux.useSelector;
   return {
-    registerUser: (user, mappers) => dispatch(registerUser(user, mappers)),
-    error: select(ToJs.selectUserRegistrationError),
-    isLoading: select(ToJs.selectUserRegistrationIsLoading),
-    isSuccess: select(ToJs.selectUserRegistrationIsSuccess),
-    user: select(ToJs.selectUserRegistration).toJS()
+    registerUser: (user, mappers) => dispatch(actions.registerUser(user, mappers)),
+    error: select(selectors.selectUserRegistrationError),
+    isLoading: select(selectors.selectUserRegistrationIsLoading),
+    isSuccess: select(selectors.selectUserRegistrationIsSuccess),
+    user: select(selectors.selectUserRegistration).toJS()
   };
 };
 
@@ -98,17 +82,17 @@ const withLogin = WrappedComponent => {
   // };
   const mapStateToProps = state => {
     return {
-      authenticationError: ToJs.selectUserAuthenticationError(state),
-      error: ToJs.selectUserError(state),
-      isAuthenticated: ToJs.selectUserIsAuthenticated(state),
-      isLoading: ToJs.selectUserIsLoading(state),
-      user: ToJs.selectUser(state)
+      authenticationError: selectors.selectUserAuthenticationError(state),
+      error: selectors.selectUserError(state),
+      isAuthenticated: selectors.selectUserIsAuthenticated(state),
+      isLoading: selectors.selectUserIsLoading(state),
+      user: selectors.selectUser(state)
     };
   };
 
   const mapDispatchToProps = {
-    loginUser,
-    logoutUser
+    loginUser: actions.loginUser,
+    logoutUser: actions.logoutUser
   };
   const ConnectedComponent = reactRedux.connect(mapStateToProps, mapDispatchToProps)(ToJs.toJS(WrappedComponent));
   ConnectedComponent.displayName = `${getDisplayName(WrappedComponent)}`;
@@ -130,31 +114,31 @@ const withRegistration = WrappedComponent => {
   // };
   const mapStateToProps = state => {
     return {
-      error: ToJs.selectUserRegistrationError(state),
-      isLoading: ToJs.selectUserRegistrationIsLoading(state),
-      isSuccess: ToJs.selectUserRegistrationIsSuccess(state),
-      user: ToJs.selectUserRegistration(state)
+      error: selectors.selectUserRegistrationError(state),
+      isLoading: selectors.selectUserRegistrationIsLoading(state),
+      isSuccess: selectors.selectUserRegistrationIsSuccess(state),
+      user: selectors.selectUserRegistration(state)
     };
   };
 
   const mapDispatchToProps = {
-    registerUser
+    registerUser: actions.registerUser
   };
   const ConnectedComponent = reactRedux.connect(mapStateToProps, mapDispatchToProps)(ToJs.toJS(WrappedComponent));
   ConnectedComponent.displayName = `${getDisplayName$1(WrappedComponent)}`;
   return ConnectedComponent;
 };
 
+exports.initialUserState = reducers.initialUserState;
+exports.reducer = reducers.UserReducer;
+exports.types = reducers.userTypes;
+exports.selectors = selectors.userSelectors;
 exports.LoginHelper = login.LoginHelper;
 exports.handleRequiresLoginSaga = login.handleRequiresLoginSaga;
-exports.initialUserState = login.initialUserState;
-exports.reducer = login.UserReducer;
 exports.refreshSecurityToken = login.refreshSecurityToken;
-exports.types = login.types;
-exports.selectors = ToJs.selectors;
+exports.actions = actions.userActions;
 exports.LoginContainer = Login_container;
 exports.RegistrationContainer = Registration_container;
-exports.actions = actions;
 exports.useLogin = useLogin;
 exports.useRegistration = useLogin$1;
 exports.withLogin = withLogin;

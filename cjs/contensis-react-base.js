@@ -13,32 +13,35 @@ var reactRouterDom = require('react-router-dom');
 var reactRedux = require('react-redux');
 var server = require('react-dom/server');
 var webpack = require('react-loadable/webpack');
-var styledComponents = require('styled-components');
+var styled = require('styled-components');
 var Helmet = require('react-helmet');
 var serialize = require('serialize-javascript');
 var minifyCssString = require('minify-css-string');
 require('immutable');
-require('./login-0e13e272.js');
-var App = require('./App-eb4a124c.js');
+require('./reducers-0387eb16.js');
+var App = require('./App-35ac96a5.js');
 require('history');
 require('contensis-delivery-api');
-var routing = require('./routing-6197a03e.js');
+var selectors$1 = require('./selectors-975b9ec9.js');
 require('redux');
 require('redux-immutable');
 require('redux-thunk');
 require('redux-saga');
-var version = require('./version-7fdcc2c0.js');
+var selectors = require('./selectors-44ae4a9e.js');
 require('query-string');
 require('@redux-saga/core/effects');
+require('./selectors-00e8bddc.js');
 require('loglevel');
-require('./ToJs-8f6b21c9.js');
+require('./selectors-f89efb18.js');
+require('./login-bf48d1e9.js');
 var mapJson = require('jsonpath-mapper');
 require('await-to-js');
 require('js-cookie');
+require('./ToJs-4e6462a1.js');
 var reactRouterConfig = require('react-router-config');
 require('react-hot-loader');
 require('prop-types');
-require('./RouteLoader-72de4da1.js');
+require('./RouteLoader-69097c81.js');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -197,8 +200,8 @@ const addStandardHeaders = (state, response, packagejson, groups) => {
 const addVarnishAuthenticationHeaders = (state, response, groups = {}) => {
   if (state) {
     try {
-      const stateEntry = routing.selectRouteEntry(state);
-      const project = routing.selectCurrentProject(state);
+      const stateEntry = selectors$1.selectRouteEntry(state);
+      const project = selectors$1.selectCurrentProject(state);
       const {
         globalGroups,
         allowedGroups
@@ -304,18 +307,18 @@ const webApp = (app, ReactApp, config) => {
     const context = {};
     let status = 200; // Create a store (with a memory history) from our current url
 
-    const store = App.createStore(withReducers, App.fromJSLeaveImmer({}), App.history({
+    const store = selectors.createStore(withReducers, App.fromJSLeaveImmer({}), App.history({
       initialEntries: [url]
     })); // dispatch any global and non-saga related actions before calling our JSX
 
     const versionStatusFromHostname = App.deliveryApi.getVersionStatusFromHostname(request.hostname); // eslint-disable-next-line no-console
 
     console.log(`Request for ${request.path} hostname: ${request.hostname} versionStatus: ${versionStatusFromHostname}`);
-    store.dispatch(version.setVersionStatus(request.query.versionStatus || versionStatusFromHostname));
-    store.dispatch(version.setVersion(versionInfo.commitRef, versionInfo.buildNo));
+    store.dispatch(selectors.setVersionStatus(request.query.versionStatus || versionStatusFromHostname));
+    store.dispatch(selectors.setVersion(versionInfo.commitRef, versionInfo.buildNo));
     const project = App.pickProject(request.hostname, request.query);
     const groups = allowedGroups && allowedGroups[project];
-    store.dispatch(routing.setCurrentProject(project, groups));
+    store.dispatch(selectors$1.setCurrentProject(project, groups));
     const modules = [];
     const jsx = React__default['default'].createElement(Loadable__default['default'].Capture, {
       report: moduleName => modules.push(moduleName)
@@ -366,7 +369,7 @@ const webApp = (app, ReactApp, config) => {
 
     if (!accessMethod.DYNAMIC) {
       store.runSaga(App.rootSaga(withSagas)).toPromise().then(() => {
-        const sheet = new styledComponents.ServerStyleSheet();
+        const sheet = new styled.ServerStyleSheet();
         const html = server.renderToString(sheet.collectStyles(jsx));
         const helmet = Helmet__default['default'].renderStatic();
         Helmet__default['default'].rewind();

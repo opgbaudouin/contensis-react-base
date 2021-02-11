@@ -7,7 +7,268 @@ import { takeEvery, select, put, call, all } from '@redux-saga/core/effects';
 import { error, warn, info } from 'loglevel';
 import mapJson from 'jsonpath-mapper';
 import PropTypes from 'prop-types';
-import { navigation, routing, version } from '@zengenti/contensis-react-base/redux';
+
+function action(type, payload = {}) {
+  return {
+    type,
+    ...payload
+  };
+}
+
+const ROUTING_PREFIX = '@ROUTING/';
+const GET_ENTRY = `${ROUTING_PREFIX}_GET_ENTRY`;
+const SET_ENTRY = `${ROUTING_PREFIX}_SET_ENTRY`;
+const SET_NODE = `${ROUTING_PREFIX}_SET_NODE`;
+const SET_ANCESTORS = `${ROUTING_PREFIX}_SET_ANCESTORS`;
+const SET_SIBLINGS = `${ROUTING_PREFIX}_SET_SIBLINGS`;
+const SET_ENTRY_ID = `${ROUTING_PREFIX}_SET_ENTRY_ID`;
+const SET_SURROGATE_KEYS = `${ROUTING_PREFIX}_SET_SURROGATE_KEYS`;
+const SET_NAVIGATION_NOT_FOUND = `${ROUTING_PREFIX}_SET_NOT_FOUND`;
+const SET_NAVIGATION_PATH = `${ROUTING_PREFIX}_SET_NAVIGATION_PATH`;
+const SET_TARGET_PROJECT = `${ROUTING_PREFIX}_SET_TARGET_PROJECT`;
+const SET_ROUTE = `${ROUTING_PREFIX}_SET_ROUTE`;
+const CALL_HISTORY_METHOD = `${ROUTING_PREFIX}_CALL_HISTORY_METHOD`;
+
+var routing = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  GET_ENTRY: GET_ENTRY,
+  SET_ENTRY: SET_ENTRY,
+  SET_NODE: SET_NODE,
+  SET_ANCESTORS: SET_ANCESTORS,
+  SET_SIBLINGS: SET_SIBLINGS,
+  SET_ENTRY_ID: SET_ENTRY_ID,
+  SET_SURROGATE_KEYS: SET_SURROGATE_KEYS,
+  SET_NAVIGATION_NOT_FOUND: SET_NAVIGATION_NOT_FOUND,
+  SET_NAVIGATION_PATH: SET_NAVIGATION_PATH,
+  SET_TARGET_PROJECT: SET_TARGET_PROJECT,
+  SET_ROUTE: SET_ROUTE,
+  CALL_HISTORY_METHOD: CALL_HISTORY_METHOD
+});
+
+const setNotFound = notFound => action(SET_NAVIGATION_NOT_FOUND, {
+  notFound
+});
+const setNavigationPath = (path, location, staticRoute, withEvents, statePath, routes) => action(SET_NAVIGATION_PATH, {
+  path,
+  location,
+  staticRoute,
+  withEvents,
+  statePath,
+  routes
+});
+const setCurrentProject = (project, allowedGroups) => action(SET_TARGET_PROJECT, {
+  project,
+  allowedGroups
+});
+const setRoute = (path, state) => action(SET_ROUTE, {
+  path,
+  state
+});
+const setRouteEntry = entry => action(SET_ENTRY, {
+  entry
+});
+const setSurrogateKeys = keys => action(SET_SURROGATE_KEYS, {
+  keys
+});
+
+var routing$1 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  setNotFound: setNotFound,
+  setNavigationPath: setNavigationPath,
+  setCurrentProject: setCurrentProject,
+  setRoute: setRoute,
+  setRouteEntry: setRouteEntry,
+  setSurrogateKeys: setSurrogateKeys
+});
+
+function queryParams(search) {
+  return queryString.parse(typeof window != 'undefined' ? window.location.search : search);
+}
+const clientHostname = () => `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
+const addHostname = typeof window == 'undefined' || window.location.host == 'localhost:3000' ? `https://${PUBLIC_URI
+/* global PUBLIC_URI */
+}` : clientHostname();
+
+const selectRouteEntry = state => {
+  return state.getIn(['routing', 'entry'], Map());
+};
+const selectMappedEntry = state => {
+  return state.getIn(['routing', 'mappedEntry'], null);
+};
+const selectNodeDepends = state => {
+  return state.getIn(['routing', 'nodeDepends'], List());
+};
+const selectCurrentTreeID = state => {
+  return state.getIn(['routing', 'currentTreeId']);
+};
+const selectRouteEntryEntryId = state => {
+  return state.getIn(['routing', 'entry', 'sys', 'id'], null);
+};
+const selectRouteEntryContentTypeId = state => {
+  const entry = selectRouteEntry(state);
+  return entry && entry.getIn(['sys', 'contentTypeId'], null);
+};
+const selectRouteEntrySlug = state => {
+  return state.getIn(['routing', 'entry', 'sys', 'slug'], null);
+};
+const selectRouteEntryID = state => {
+  return state.getIn(['routing', 'entryID']);
+};
+const selectCurrentPath = state => {
+  return state.getIn(['routing', 'currentPath']);
+};
+const selectCurrentSearch = state => {
+  return state.getIn(['routing', 'location', 'search']);
+};
+const selectCurrentHash = state => {
+  return state.getIn(['routing', 'location', 'hash']);
+};
+const selectQueryStringAsObject = state => queryParams(selectCurrentSearch(state));
+const selectCurrentProject = state => {
+  return state.getIn(['routing', 'currentProject']);
+};
+const selectIsNotFound = state => {
+  return state.getIn(['routing', 'notFound']);
+};
+const selectCurrentAncestors = state => {
+  return state.getIn(['routing', 'currentNodeAncestors'], List());
+};
+const selectCurrentNode = state => {
+  return state.getIn(['routing', 'currentNode']);
+};
+const selectBreadcrumb = state => {
+  return (selectCurrentAncestors(state) || List()).push(selectCurrentNode(state));
+};
+const selectRouteLoading = state => {
+  return state.getIn(['routing', 'isLoading']);
+};
+
+var routing$2 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  selectRouteEntry: selectRouteEntry,
+  selectMappedEntry: selectMappedEntry,
+  selectNodeDepends: selectNodeDepends,
+  selectCurrentTreeID: selectCurrentTreeID,
+  selectRouteEntryEntryId: selectRouteEntryEntryId,
+  selectRouteEntryContentTypeId: selectRouteEntryContentTypeId,
+  selectRouteEntrySlug: selectRouteEntrySlug,
+  selectRouteEntryID: selectRouteEntryID,
+  selectCurrentPath: selectCurrentPath,
+  selectCurrentSearch: selectCurrentSearch,
+  selectCurrentHash: selectCurrentHash,
+  selectQueryStringAsObject: selectQueryStringAsObject,
+  selectCurrentProject: selectCurrentProject,
+  selectIsNotFound: selectIsNotFound,
+  selectCurrentAncestors: selectCurrentAncestors,
+  selectCurrentNode: selectCurrentNode,
+  selectBreadcrumb: selectBreadcrumb,
+  selectRouteLoading: selectRouteLoading
+});
+
+const ACTION_PREFIX = '@NAVIGATION/';
+const GET_NODE_TREE = `${ACTION_PREFIX}_GET_NODE_TREE`;
+const SET_NODE_TREE = `${ACTION_PREFIX}_SET_NODE_TREE`;
+const GET_NODE_TREE_ERROR = `${ACTION_PREFIX}_GET_NODE_TREE_ERROR`;
+
+var navigation = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  GET_NODE_TREE: GET_NODE_TREE,
+  SET_NODE_TREE: SET_NODE_TREE,
+  GET_NODE_TREE_ERROR: GET_NODE_TREE_ERROR
+});
+
+const VERSION_PREFIX = '@VERSION/';
+const SET_VERSION = `${VERSION_PREFIX}SET_VERSION`;
+const SET_VERSION_STATUS = `${VERSION_PREFIX}SET_VERSION_STATUS`;
+
+var version = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  SET_VERSION: SET_VERSION,
+  SET_VERSION_STATUS: SET_VERSION_STATUS
+});
+
+const setVersion = (commitRef, buildNo) => action(SET_VERSION, {
+  commitRef,
+  buildNo
+});
+const setVersionStatus = status => action(SET_VERSION_STATUS, {
+  status
+});
+
+var version$1 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  setVersion: setVersion,
+  setVersionStatus: setVersionStatus
+});
+
+const hasNavigationTree = state => {
+  return state.getIn(['navigation', 'isReady']);
+};
+const selectNavigationRoot = state => {
+  return state.getIn(['navigation', 'root']);
+};
+const selectNavigationDepends = state => {
+  return state.getIn(['navigation', 'treeDepends']);
+};
+
+var navigation$1 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  hasNavigationTree: hasNavigationTree,
+  selectNavigationRoot: selectNavigationRoot,
+  selectNavigationDepends: selectNavigationDepends
+});
+
+const selectCommitRef = state => {
+  return state.getIn(['version', 'commitRef']);
+};
+const selectBuildNumber = state => {
+  return state.getIn(['version', 'buildNo']);
+};
+const selectVersionStatus = state => {
+  return state.getIn(['version', 'contensisVersionStatus']);
+};
+
+var version$2 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  selectCommitRef: selectCommitRef,
+  selectBuildNumber: selectBuildNumber,
+  selectVersionStatus: selectVersionStatus
+});
+
+var types = {
+  navigation: navigation,
+  routing: routing,
+  version: version
+};
+
+const loadNavigationTree = () => action(GET_NODE_TREE);
+
+var navigation$2 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  loadNavigationTree: loadNavigationTree
+});
+
+var actions = {
+  navigation: navigation$2,
+  routing: routing$1,
+  version: version$1
+};
+
+var selectors = {
+  navigation: navigation$1,
+  routing: routing$2,
+  version: version$2
+};
+const routing$3 = {
+  types: types.routing,
+  actions: actions.routing,
+  selectors: selectors.routing
+};
+const version$3 = {
+  types: types.version,
+  actions: actions.version,
+  selectors: selectors.version
+};
 
 const toJS = WrappedComponent => wrappedComponentProps => {
   const KEY = 0;
@@ -19,30 +280,30 @@ const toJS = WrappedComponent => wrappedComponentProps => {
   return React.createElement(WrappedComponent, propsJS);
 };
 
-const ACTION_PREFIX = '@SEARCH/';
-const APPLY_CONFIG = `${ACTION_PREFIX}APPLY_CONFIG`;
-const CLEAR_FILTERS = `${ACTION_PREFIX}CLEAR_FILTERS`;
-const DO_SEARCH = `${ACTION_PREFIX}DO_SEARCH`;
-const EXECUTE_FEATURED_SEARCH = `${ACTION_PREFIX}EXECUTE_FEATURED_SEARCH`;
-const EXECUTE_SEARCH = `${ACTION_PREFIX}EXECUTE_SEARCH`;
-const EXECUTE_SEARCH_DENIED = `${ACTION_PREFIX}EXECUTE_SEARCH_DENIED`;
-const EXECUTE_SEARCH_ERROR = `${ACTION_PREFIX}EXECUTE_SEARCH_ERROR`;
-const EXECUTE_SEARCH_PRELOAD = `${ACTION_PREFIX}EXECUTE_SEARCH_PRELOAD`;
-const LOAD_FILTERS = `${ACTION_PREFIX}LOAD_FILTERS`;
-const LOAD_FILTERS_COMPLETE = `${ACTION_PREFIX}LOAD_FILTERS_COMPLETE`;
-const LOAD_FILTERS_ERROR = `${ACTION_PREFIX}LOAD_FILTERS_ERROR`;
-const SET_FEATURED_ENTRIES = `${ACTION_PREFIX}SET_FEATURED_ENTRIES`;
-const SET_ROUTE_FILTERS = `${ACTION_PREFIX}SET_ROUTE_FILTERS`;
-const SET_SEARCH_ENTRIES = `${ACTION_PREFIX}SET_SEARCH_ENTRIES`;
-const SET_SELECTED_FILTER = `${ACTION_PREFIX}SET_SELECTED_FILTER`;
-const UPDATE_CURRENT_FACET = `${ACTION_PREFIX}UPDATE_CURRENT_FACET`;
-const UPDATE_CURRENT_TAB = `${ACTION_PREFIX}UPDATE_CURRENT_TAB`;
-const UPDATE_SORT_ORDER = `${ACTION_PREFIX}UPDATE_SORT_ORDER`;
-const UPDATE_PAGE_INDEX = `${ACTION_PREFIX}UPDATE_PAGE_INDEX`;
-const UPDATE_SEARCH_TERM = `${ACTION_PREFIX}UPDATE_SEARCH_TERM`;
-const UPDATE_SELECTED_FILTERS = `${ACTION_PREFIX}UPDATE_SELECTED_FILTERS`;
+const ACTION_PREFIX$1 = '@SEARCH/';
+const APPLY_CONFIG = `${ACTION_PREFIX$1}APPLY_CONFIG`;
+const CLEAR_FILTERS = `${ACTION_PREFIX$1}CLEAR_FILTERS`;
+const DO_SEARCH = `${ACTION_PREFIX$1}DO_SEARCH`;
+const EXECUTE_FEATURED_SEARCH = `${ACTION_PREFIX$1}EXECUTE_FEATURED_SEARCH`;
+const EXECUTE_SEARCH = `${ACTION_PREFIX$1}EXECUTE_SEARCH`;
+const EXECUTE_SEARCH_DENIED = `${ACTION_PREFIX$1}EXECUTE_SEARCH_DENIED`;
+const EXECUTE_SEARCH_ERROR = `${ACTION_PREFIX$1}EXECUTE_SEARCH_ERROR`;
+const EXECUTE_SEARCH_PRELOAD = `${ACTION_PREFIX$1}EXECUTE_SEARCH_PRELOAD`;
+const LOAD_FILTERS = `${ACTION_PREFIX$1}LOAD_FILTERS`;
+const LOAD_FILTERS_COMPLETE = `${ACTION_PREFIX$1}LOAD_FILTERS_COMPLETE`;
+const LOAD_FILTERS_ERROR = `${ACTION_PREFIX$1}LOAD_FILTERS_ERROR`;
+const SET_FEATURED_ENTRIES = `${ACTION_PREFIX$1}SET_FEATURED_ENTRIES`;
+const SET_ROUTE_FILTERS = `${ACTION_PREFIX$1}SET_ROUTE_FILTERS`;
+const SET_SEARCH_ENTRIES = `${ACTION_PREFIX$1}SET_SEARCH_ENTRIES`;
+const SET_SELECTED_FILTER = `${ACTION_PREFIX$1}SET_SELECTED_FILTER`;
+const UPDATE_CURRENT_FACET = `${ACTION_PREFIX$1}UPDATE_CURRENT_FACET`;
+const UPDATE_CURRENT_TAB = `${ACTION_PREFIX$1}UPDATE_CURRENT_TAB`;
+const UPDATE_SORT_ORDER = `${ACTION_PREFIX$1}UPDATE_SORT_ORDER`;
+const UPDATE_PAGE_INDEX = `${ACTION_PREFIX$1}UPDATE_PAGE_INDEX`;
+const UPDATE_SEARCH_TERM = `${ACTION_PREFIX$1}UPDATE_SEARCH_TERM`;
+const UPDATE_SELECTED_FILTERS = `${ACTION_PREFIX$1}UPDATE_SELECTED_FILTERS`;
 
-var types = /*#__PURE__*/Object.freeze({
+var types$1 = /*#__PURE__*/Object.freeze({
   __proto__: null,
   APPLY_CONFIG: APPLY_CONFIG,
   CLEAR_FILTERS: CLEAR_FILTERS,
@@ -160,7 +421,7 @@ const updateSortOrder = (orderBy, facet) => {
   };
 };
 
-var actions = /*#__PURE__*/Object.freeze({
+var actions$1 = /*#__PURE__*/Object.freeze({
   __proto__: null,
   withMappers: withMappers,
   withMappers2: withMappers2,
@@ -439,7 +700,7 @@ const selectListing = {
   getSelectedFilters: (state, listing) => getSelectedFilters(state, listing, Context.listings)
 };
 
-var selectors = /*#__PURE__*/Object.freeze({
+var selectors$1 = /*#__PURE__*/Object.freeze({
   __proto__: null,
   getSearchContext: getSearchContext,
   getCurrent: getCurrent,
@@ -620,34 +881,28 @@ const withListing = mappers => ListingComponent => {
   };
   return connect(mapStateToProps, mapDispatchToProps)(toJS(Wrapper));
 };
-
 const {
-  hasNavigationTree,
-  selectNavigationRoot,
-  selectNavigationDepends
-} = navigation.selectors;
-const {
-  selectBreadcrumb,
-  selectCurrentAncestors,
-  selectCurrentNode,
-  selectCurrentPath,
-  selectCurrentProject,
-  selectCurrentSearch,
-  selectIsNotFound,
-  selectQueryStringAsObject,
-  selectRouteEntry,
-  selectRouteEntryContentTypeId,
+  selectBreadcrumb: selectBreadcrumb$1,
+  selectCurrentAncestors: selectCurrentAncestors$1,
+  selectCurrentNode: selectCurrentNode$1,
+  selectCurrentPath: selectCurrentPath$1,
+  selectCurrentProject: selectCurrentProject$1,
+  selectCurrentSearch: selectCurrentSearch$1,
+  selectIsNotFound: selectIsNotFound$1,
+  selectQueryStringAsObject: selectQueryStringAsObject$1,
+  selectRouteEntry: selectRouteEntry$1,
+  selectRouteEntryContentTypeId: selectRouteEntryContentTypeId$1,
   selectRouteEntryDepends,
-  selectRouteEntryEntryId,
-  selectRouteEntryID,
-  selectRouteEntrySlug,
-  selectRouteLoading
-} = routing.selectors;
+  selectRouteEntryEntryId: selectRouteEntryEntryId$1,
+  selectRouteEntryID: selectRouteEntryID$1,
+  selectRouteEntrySlug: selectRouteEntrySlug$1,
+  selectRouteLoading: selectRouteLoading$1
+} = routing$3.selectors;
 const {
-  selectCommitRef,
-  selectBuildNumber,
-  selectVersionStatus
-} = version.selectors;
+  selectCommitRef: selectCommitRef$1,
+  selectBuildNumber: selectBuildNumber$1,
+  selectVersionStatus: selectVersionStatus$1
+} = version$3.selectors;
 
 const getClientConfig = (project, env) => {
   let config = DELIVERY_API_CONFIG;
@@ -845,10 +1100,10 @@ const buildUrl = (route, params) => {
   const path = qs ? `${route}?${qs}` : route;
   return path;
 };
-const clientHostname = () => `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
-const addHostname = typeof window == 'undefined' || window.location.host == 'localhost:3000' ? `https://${PUBLIC_URI
+const clientHostname$1 = () => `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
+const addHostname$1 = typeof window == 'undefined' || window.location.host == 'localhost:3000' ? `https://${PUBLIC_URI
 /* global PUBLIC_URI */
-}` : clientHostname();
+}` : clientHostname$1();
 
 function fixFreeTextForElastic(s) {
   let illegalChars = ['>', '<', '=', '|', '!', '{', '}', '[', ']', '^', '~', '*', '?', ':', '\\', '/'];
@@ -1173,7 +1428,7 @@ const searchUriTemplate = {
     pageIndex
   }) => {
     const currentFacet = getSearchContext(state) !== Context.listings && (facet || getCurrentFacet(state));
-    const currentPath = selectCurrentPath(state) || '/search';
+    const currentPath = selectCurrentPath$1(state) || '/search';
     const newPath = currentFacet ? `${currentPath}/${currentFacet}` : currentPath;
     if (pageIndex) return `${newPath}/${pageIndex + 1}`;
     return newPath;
@@ -1451,7 +1706,7 @@ const queryParamsTemplate = {
   }) => getSelectedFilters(state, facet, context).map(f => f.join(',')),
   versionStatus: ({
     state
-  }) => selectVersionStatus(state),
+  }) => selectVersionStatus$1(state),
   weightedSearchFields: root => {
     const wsf = getQueryParameter(root, 'weightedSearchFields', new List([]));
     const deduped = wsf.groupBy(v => v.get('fieldId')).map(v => v.first()).toList();
@@ -1679,7 +1934,7 @@ function* loadFilter(action) {
 
   try {
     if (contentTypeId) {
-      const versionStatus = yield select(selectVersionStatus);
+      const versionStatus = yield select(selectVersionStatus$1);
       const query = filterQuery(Array.isArray(contentTypeId) ? contentTypeId : [contentTypeId], versionStatus, customWhere);
       const payload = yield cachedSearch.search(query, 0, projectId);
       if (!payload) throw new Error('No payload returned by search');
@@ -2163,5 +2418,5 @@ var reducers = (config => {
   };
 });
 
-export { actions, queries, reducers as reducer, searchSagas as sagas, schema, selectors, setRouteFilters, types, useMinilist, withListing, withSearch };
+export { actions$1 as actions, queries, reducers as reducer, searchSagas as sagas, schema, selectors$1 as selectors, setRouteFilters, types$1 as types, useMinilist, withListing, withSearch };
 //# sourceMappingURL=search.js.map

@@ -1,5 +1,11 @@
-import { Map, List } from 'immutable';
-import queryString from 'query-string';
+'use strict';
+
+var immutable = require('immutable');
+var queryString = require('query-string');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var queryString__default = /*#__PURE__*/_interopDefaultLegacy(queryString);
 
 function action(type, payload = {}) {
   return {
@@ -24,7 +30,7 @@ const SET_ROUTE = `${ROUTING_PREFIX}_SET_ROUTE`;
 const CALL_HISTORY_METHOD = `${ROUTING_PREFIX}_CALL_HISTORY_METHOD`;
 const UPDATE_LOADING_STATE = `${ROUTING_PREFIX}_UPDATE_LOADING_STATE`;
 
-var routing = /*#__PURE__*/Object.freeze({
+var routingTypes = /*#__PURE__*/Object.freeze({
   __proto__: null,
   GET_ENTRY: GET_ENTRY,
   SET_ENTRY: SET_ENTRY,
@@ -67,7 +73,7 @@ const setSurrogateKeys = keys => action(SET_SURROGATE_KEYS, {
   keys
 });
 
-var routing$1 = /*#__PURE__*/Object.freeze({
+var routingActions = /*#__PURE__*/Object.freeze({
   __proto__: null,
   setNotFound: setNotFound,
   setNavigationPath: setNavigationPath,
@@ -78,7 +84,7 @@ var routing$1 = /*#__PURE__*/Object.freeze({
 });
 
 function queryParams(search) {
-  return queryString.parse(typeof window != 'undefined' ? window.location.search : search);
+  return queryString__default['default'].parse(typeof window != 'undefined' ? window.location.search : search);
 }
 const clientHostname = () => `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
 const addHostname = typeof window == 'undefined' || window.location.host == 'localhost:3000' ? `https://${PUBLIC_URI
@@ -86,13 +92,13 @@ const addHostname = typeof window == 'undefined' || window.location.host == 'loc
 }` : clientHostname();
 
 const selectRouteEntry = state => {
-  return state.getIn(['routing', 'entry'], Map());
+  return state.getIn(['routing', 'entry'], immutable.Map());
 };
 const selectMappedEntry = state => {
   return state.getIn(['routing', 'mappedEntry'], null);
 };
 const selectNodeDepends = state => {
-  return state.getIn(['routing', 'nodeDepends'], List());
+  return state.getIn(['routing', 'nodeDepends'], immutable.List());
 };
 const selectCurrentTreeID = state => {
   return state.getIn(['routing', 'currentTreeId']);
@@ -130,19 +136,19 @@ const selectIsNotFound = state => {
   return state.getIn(['routing', 'notFound']);
 };
 const selectCurrentAncestors = state => {
-  return state.getIn(['routing', 'currentNodeAncestors'], List());
+  return state.getIn(['routing', 'currentNodeAncestors'], immutable.List());
 };
 const selectCurrentNode = state => {
   return state.getIn(['routing', 'currentNode']);
 };
 const selectBreadcrumb = state => {
-  return (selectCurrentAncestors(state) || List()).push(selectCurrentNode(state));
+  return (selectCurrentAncestors(state) || immutable.List()).push(selectCurrentNode(state));
 };
 const selectRouteLoading = state => {
   return state.getIn(['routing', 'isLoading']);
 };
 
-var routing$2 = /*#__PURE__*/Object.freeze({
+var routingSelectors = /*#__PURE__*/Object.freeze({
   __proto__: null,
   selectRouteEntry: selectRouteEntry,
   selectMappedEntry: selectMappedEntry,
@@ -165,5 +171,35 @@ var routing$2 = /*#__PURE__*/Object.freeze({
   selectRouteLoading: selectRouteLoading
 });
 
-export { routing$1 as A, routing$2 as B, CALL_HISTORY_METHOD as C, SET_TARGET_PROJECT as S, UPDATE_LOADING_STATE as U, selectRouteEntry as a, selectCurrentProject as b, SET_SURROGATE_KEYS as c, SET_SIBLINGS as d, SET_ROUTE as e, SET_NAVIGATION_PATH as f, SET_ENTRY as g, SET_ANCESTORS as h, setSurrogateKeys as i, selectCurrentNode as j, selectCurrentAncestors as k, findContentTypeMapping as l, selectRouteEntryEntryId as m, selectRouteEntryLanguage as n, selectMappedEntry as o, selectCurrentSearch as p, queryParams as q, setRoute as r, setCurrentProject as s, selectRouteEntryContentTypeId as t, selectIsNotFound as u, selectRouteLoading as v, selectCurrentPath as w, setNavigationPath as x, action as y, routing as z };
-//# sourceMappingURL=routing-64807af8.js.map
+exports.CALL_HISTORY_METHOD = CALL_HISTORY_METHOD;
+exports.SET_ANCESTORS = SET_ANCESTORS;
+exports.SET_ENTRY = SET_ENTRY;
+exports.SET_NAVIGATION_PATH = SET_NAVIGATION_PATH;
+exports.SET_ROUTE = SET_ROUTE;
+exports.SET_SIBLINGS = SET_SIBLINGS;
+exports.SET_SURROGATE_KEYS = SET_SURROGATE_KEYS;
+exports.SET_TARGET_PROJECT = SET_TARGET_PROJECT;
+exports.UPDATE_LOADING_STATE = UPDATE_LOADING_STATE;
+exports.action = action;
+exports.findContentTypeMapping = findContentTypeMapping;
+exports.queryParams = queryParams;
+exports.routingActions = routingActions;
+exports.routingSelectors = routingSelectors;
+exports.routingTypes = routingTypes;
+exports.selectCurrentAncestors = selectCurrentAncestors;
+exports.selectCurrentNode = selectCurrentNode;
+exports.selectCurrentPath = selectCurrentPath;
+exports.selectCurrentProject = selectCurrentProject;
+exports.selectCurrentSearch = selectCurrentSearch;
+exports.selectIsNotFound = selectIsNotFound;
+exports.selectMappedEntry = selectMappedEntry;
+exports.selectRouteEntry = selectRouteEntry;
+exports.selectRouteEntryContentTypeId = selectRouteEntryContentTypeId;
+exports.selectRouteEntryEntryId = selectRouteEntryEntryId;
+exports.selectRouteEntryLanguage = selectRouteEntryLanguage;
+exports.selectRouteLoading = selectRouteLoading;
+exports.setCurrentProject = setCurrentProject;
+exports.setNavigationPath = setNavigationPath;
+exports.setRoute = setRoute;
+exports.setSurrogateKeys = setSurrogateKeys;
+//# sourceMappingURL=selectors-975b9ec9.js.map

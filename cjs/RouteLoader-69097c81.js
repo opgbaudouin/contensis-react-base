@@ -3,8 +3,9 @@
 var React = require('react');
 var reactRouterDom = require('react-router-dom');
 var reactRedux = require('react-redux');
-var routing = require('./routing-6197a03e.js');
-var ToJs = require('./ToJs-8f6b21c9.js');
+var selectors = require('./selectors-975b9ec9.js');
+var selectors$1 = require('./selectors-f89efb18.js');
+var ToJs = require('./ToJs-4e6462a1.js');
 var reactRouterConfig = require('react-router-config');
 var reactHotLoader = require('react-hot-loader');
 var PropTypes = require('prop-types');
@@ -156,22 +157,22 @@ RouteLoader.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    contentTypeId: routing.selectRouteEntryContentTypeId(state),
-    entry: routing.selectRouteEntry(state),
-    isNotFound: routing.selectIsNotFound(state),
-    isLoading: routing.selectRouteLoading(state),
-    isLoggedIn: ToJs.selectUserIsAuthenticated(state),
-    mappedEntry: routing.selectMappedEntry(state),
-    projectId: routing.selectCurrentProject(state),
-    statePath: routing.selectCurrentPath(state),
-    userGroups: ToJs.selectUserGroups(state)
+    contentTypeId: selectors.selectRouteEntryContentTypeId(state),
+    entry: selectors.selectRouteEntry(state),
+    isNotFound: selectors.selectIsNotFound(state),
+    isLoading: selectors.selectRouteLoading(state),
+    isLoggedIn: selectors$1.selectUserIsAuthenticated(state),
+    mappedEntry: selectors.selectMappedEntry(state),
+    projectId: selectors.selectCurrentProject(state),
+    statePath: selectors.selectCurrentPath(state),
+    userGroups: selectors$1.selectUserGroups(state)
   };
 };
 
 const mapDispatchToProps = {
-  setNavigationPath: routing.setNavigationPath
+  setNavigationPath: selectors.setNavigationPath
 };
 var RouteLoader$1 = reactHotLoader.hot(module)(reactRedux.connect(mapStateToProps, mapDispatchToProps)(ToJs.toJS(RouteLoader)));
 
 exports.RouteLoader = RouteLoader$1;
-//# sourceMappingURL=RouteLoader-72de4da1.js.map
+//# sourceMappingURL=RouteLoader-69097c81.js.map

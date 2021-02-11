@@ -1,56 +1,44 @@
 import 'immutable';
-import { z as routing$1, y as action, A as routing$2, B as routing$3 } from './routing-64807af8.js';
-import { n as navigation$2, v as version$1, d as GET_NODE_TREE, f as version$2, g as navigation$3, i as version$3 } from './version-41f7c83e.js';
+import { u as userTypes } from './reducers-9336f64f.js';
+import { y as action, z as routingTypes, A as routingActions, B as routingSelectors } from './selectors-10d55d92.js';
+import 'redux';
+import 'redux-immutable';
+import 'redux-thunk';
+import 'redux-saga';
+import { G as GET_NODE_TREE, n as navigationTypes, d as navigationSelectors, v as versionTypes, e as versionActions } from './selectors-7c490e47.js';
+export { r as store } from './selectors-7c490e47.js';
 import 'query-string';
-
-var types = {
-  navigation: navigation$2,
-  routing: routing$1,
-  version: version$1
-};
+import { v as versionSelectors } from './selectors-0213acd7.js';
+import { u as userSelectors } from './selectors-a83a49a5.js';
+import { u as userActions } from './actions-18767d1f.js';
 
 const loadNavigationTree = () => action(GET_NODE_TREE);
 
-var navigation = /*#__PURE__*/Object.freeze({
+var navigationActions = /*#__PURE__*/Object.freeze({
   __proto__: null,
   loadNavigationTree: loadNavigationTree
 });
 
-var actions = {
-  navigation,
-  routing: routing$2,
-  version: version$2
-};
-
-var selectors = {
-  navigation: navigation$3,
-  routing: routing$3,
-  version: version$3
-};
-
-// e.g. { routing: { types, actions }, navigation: { types, actions } }
-// instead of { types: { routing, navigation }, actions: { routing, navigation } }
-
-const navigation$1 = {
-  types: types.navigation,
-  actions: actions.navigation,
-  selectors: selectors.navigation
+const navigation = {
+  types: navigationTypes,
+  actions: navigationActions,
+  selectors: navigationSelectors
 };
 const routing = {
-  types: types.routing,
-  actions: actions.routing,
-  selectors: selectors.routing
+  types: routingTypes,
+  actions: routingActions,
+  selectors: routingSelectors
 };
 const user = {
-  types: types.user,
-  actions: actions.user,
-  selectors: selectors.user
+  types: userTypes,
+  actions: userActions,
+  selectors: userSelectors
 };
 const version = {
-  types: types.version,
-  actions: actions.version,
-  selectors: selectors.version
+  types: versionTypes,
+  actions: versionActions,
+  selectors: versionSelectors
 };
 
-export { navigation$1 as navigation, routing, user, version };
+export { navigation, routing, user, version };
 //# sourceMappingURL=redux.js.map
