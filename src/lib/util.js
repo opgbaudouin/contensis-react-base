@@ -1,17 +1,10 @@
 // Global server and build utils
-export {
-  default as setCachingHeaders,
-} from '~/../server/util/setCachingHeaders';
-export { default as stringifyStrings } from '~/core/util/stringifyStrings';
-export { default as urls } from '~/core/util/urls';
+export { default as setCachingHeaders } from '%/server/util/setCachingHeaders';
+export { default as stringifyStrings } from '%/util/stringify-strings';
+export { default as urls } from '%/util/urls';
 
 // JSON mapping functions
-export {
-  mapJson,
-  mapEntries,
-  mapComposer,
-  jpath,
-} from '~/core/util/json-mapper';
+export { mapJson, mapEntries, mapComposer, jpath } from '%/util/json-mapper';
 
 // JSON mapping hooks
 export {
@@ -19,4 +12,6 @@ export {
   useEntriesMapper,
   useEntryMapper,
   useComposerMapper,
-} from '~/core/util/json-mapper';
+} from '%/util/json-mapper';
+
+export { default as VersionInfo } from '%/util/pages/VersionInfo';

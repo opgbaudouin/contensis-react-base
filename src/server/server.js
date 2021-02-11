@@ -1,11 +1,11 @@
-import ZengentiAppServer from './internalServer';
-import App from '~/App';
+import ZengentiAppServer from '%/server/internalServer';
+import App from '%/App';
 // import ZengentiAppServer from '../../zengenti-isomorphic-base';
 
-import routes from '~/core/routes';
-import withReducers from '~/core/redux/reducers';
-import withSagas from '~/core/redux/sagas';
-import withEvents from '~/core/redux/withEvents';
+import routes from '~/routes';
+import withReducers from '~/redux/reducers';
+import withSagas from '~/redux/sagas';
+import withEvents from '~/redux/withEvents';
 
 import ServerFeatures from './features/configure';
 

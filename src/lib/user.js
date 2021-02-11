@@ -1,35 +1,28 @@
 // Classes
-export { LoginHelper } from '~/features/login/util/LoginHelper.class';
+export { LoginHelper } from '%/user/util/LoginHelper.class';
 
 // Containers
-export {
-  default as LoginContainer,
-} from '~/features/login/containers/Login.container';
+export { default as LoginContainer } from '%/user/containers/Login.container';
 export {
   default as RegistrationContainer,
-} from '~/features/login/containers/Registration.container';
+} from '%/user/containers/Registration.container';
 
 // HOCs
-export { default as withLogin } from '~/features/login/containers/withLogin';
+export { default as withLogin } from '%/user/containers/withLogin';
 export {
   default as withRegistration,
-} from '~/features/login/containers/withRegistration';
+} from '%/user/containers/withRegistration';
 
 // Hooks
-export { default as useLogin } from '~/features/login/containers/useLogin';
-export {
-  default as useRegistration,
-} from '~/features/login/containers/useRegistration';
+export { default as useLogin } from '%/user/containers/useLogin';
+export { default as useRegistration } from '%/user/containers/useRegistration';
 
 // Redux
 export {
   handleRequiresLoginSaga,
   refreshSecurityToken,
-} from '~/features/login/redux/sagas/login';
-export * as actions from '~/features/login/redux/actions';
-export {
-  default as reducer,
-  initialUserState,
-} from '~/features/login/redux/reducers';
-export * as selectors from '~/features/login/redux/selectors';
-export * as types from '~/features/login/redux/types';
+} from '%/user/redux/sagas/login';
+export * as actions from '%/user/redux/actions';
+export { default as reducer, initialUserState } from '%/user/redux/reducers';
+export * as selectors from '%/user/redux/selectors';
+export * as types from '%/user/redux/types';

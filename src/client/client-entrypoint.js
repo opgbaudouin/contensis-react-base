@@ -1,13 +1,11 @@
-import 'core-js';
-
-import ClientApp from './client'; // the entry point for the rest of the app
-import ReactApp from '~/App';
+import ClientApp from '%/client/client'; // the entry point for the rest of the app
+import ReactApp from '%/App';
 // import ClientApp, { ReactApp } from '../../client';
 
-import routes from '~/core/routes';
-import withReducers from '~/core/redux/reducers.js';
-import withSagas from '~/core/redux/sagas.js';
-import withEvents from '~/core/redux/withEvents';
+import routes from '~/routes';
+import withReducers from '~/redux/reducers';
+import withSagas from '~/redux/sagas';
+import withEvents from '~/redux/withEvents';
 
 const config = {
   routes,

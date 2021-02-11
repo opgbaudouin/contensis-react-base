@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { setRoute } from '~/core/redux/actions/routing';
+import { setRoute } from '%/routing/redux/actions';
 // import LoginButton from '~/features/login/components/LoginButton';
 
 const Homepage = ({ entry }) => {

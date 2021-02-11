@@ -17,6 +17,7 @@ module.exports = {
     extensions: ['.js', '.jsx', '.json'],
     alias: {
       '~': path.resolve(__dirname, '../src/app'),
+      '%': path.resolve(__dirname, '../src/contensis-react-base'),
       '-': path.resolve(__dirname, '../'),
       react: path.resolve('node_modules/react'),
       'react-dom': '@hot-loader/react-dom',

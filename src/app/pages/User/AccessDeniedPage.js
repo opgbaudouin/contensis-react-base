@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { queryParams } from '~/core/util/navigation';
+import { queryParams } from '%/util/navigation';
 import LoginContainer from '~/features/login';
 
 const StyledPage = styled.div`

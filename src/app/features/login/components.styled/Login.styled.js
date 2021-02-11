@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
-import validateProps from '~/core/util/validateProps';
-import getIn from '~/core/util/getIn';
+import validateProps from '~/util/validateProps';
+import getIn from '~/util/getIn';
 
 const LoginStyled = styled.div`
   ${({ theme }) => {

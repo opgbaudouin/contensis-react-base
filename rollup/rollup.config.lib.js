@@ -3,6 +3,7 @@ import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import alias from '@rollup/plugin-alias';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
 import postcss from 'rollup-plugin-postcss';
 import submoduleResolvePlugin from './submodule-resolve-plugin';
 import path from 'path';
@@ -15,10 +16,10 @@ const projectRootDir = path.resolve(__dirname);
 export default {
   input: {
     'contensis-react-base': './src/lib/contensis-react-base.js',
-    client: './src/client/client.js',
+    client: './src/lib/client.js',
     redux: './src/lib/redux.js',
     routing: './src/lib/routing.js',
-    search: 'zengenti-search-package',
+    search: './src/lib/search.js',
     user: './src/lib/user.js',
     util: './src/lib/util.js',
   },
@@ -28,6 +29,7 @@ export default {
       dir: './cjs',
       format: 'cjs',
       sourcemap: true,
+      exports: 'named',
     },
     {
       // file: packageJson.module,
@@ -68,6 +70,7 @@ export default {
       plugins: babelConfig.env.modern.plugins,
     }),
     commonjs(),
+    json(),
     postcss(),
   ],
 };

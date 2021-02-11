@@ -35,6 +35,7 @@ const plugins = {
         root: './src',
         alias: {
           '~': './src/app',
+          '%': './src/contensis-react-base',
           '-': './',
         },
         cwd: 'packagejson',

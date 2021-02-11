@@ -1,4 +1,4 @@
-export * as types from '~/core/redux/types/routing';
-export * as actions from '~/core/redux/actions/routing';
-export * as selectors from '~/core/redux/selectors/routing';
-export { default as RouteLoader } from '~/core/routes/RouteLoader';
+export * as types from '%/routing/redux/types';
+export * as actions from '%/routing/redux/actions';
+export * as selectors from '%/routing/redux/selectors';
+export { default as RouteLoader } from '%/routing/components/RouteLoader';

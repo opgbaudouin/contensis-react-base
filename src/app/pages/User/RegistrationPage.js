@@ -1,5 +1,5 @@
 import React from 'react';
-import RegistrationContainer from '~/features/login/containers/Registration.container';
+import RegistrationContainer from '%/user/containers/Registration.container';
 // import Registration from '~/features/accountSettings/components/Registration';
 
 const RegistrationPage = () => {

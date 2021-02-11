@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import LoginStyled from '../components.styled/Login.styled';
 import LoginForm from './LoginForm';
 import LogoutForm from './LogoutForm';
-import { toJS } from '~/core/util/ToJs';
+import { toJS } from '%/util/ToJs';
 
 const Login = ({
   error,

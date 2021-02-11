@@ -4,7 +4,7 @@ import LoginFormStyled from '~/features/login/components.styled/LoginForm.styled
 import TextInput from '~/features/input/components/TextInput';
 import Link from '~/features/link';
 import Button from '~/features/input/components/Button';
-import useKeyPress from '~/core/util/useKeyPress';
+import useKeyPress from '~/util/useKeyPress';
 const LoginForm = ({
   loginException,
   authenticationError,
