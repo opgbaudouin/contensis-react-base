@@ -27,7 +27,7 @@ module.exports = {
     rules: [
       {
         enforce: 'pre',
-        test: /\.jsx?$/,
+        test: /\.(t|j)sx?$/,
         exclude: /node_modules/,
         use: [
           {
@@ -40,7 +40,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.jsx?$/,
+        test: /\.(t|j)sx?$/,
         include: [
           path.resolve('src'),
           // These dependencies have es6 syntax which ie11 doesn't like.

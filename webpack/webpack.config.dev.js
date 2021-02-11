@@ -26,7 +26,7 @@ const CLIENT_DEV_CONFIG = {
     rules: [
       {
         enforce: 'pre',
-        test: /\.jsx?$/,
+        test: /\.(t|j)sx?$/,
         exclude: /node_modules/,
         use: [
           {
@@ -39,7 +39,7 @@ const CLIENT_DEV_CONFIG = {
         ],
       },
       {
-        test: /\.jsx?$/,
+        test: /\.(t|j)sx?$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',

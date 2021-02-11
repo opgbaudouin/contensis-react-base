@@ -1,0 +1,3 @@
+type HomePageEntry = {
+  entryTitle: string;
+};

@@ -36,6 +36,7 @@ module.exports = {
     },
   },
   rules: {
+    'flowtype/no-types-missing-file-annotation': 0,
     'require-atomic-updates': 0,
     'react/require-default-props': 0,
     'react-hooks/rules-of-hooks': 'error',
